@@ -1,16 +1,13 @@
 import java.util.*;
-import controlP5.*;
 import java.util.GregorianCalendar;
 import java.util.Date;
 
 class HomePage {
 
-  ControlP5 cp5;
   AppDesign appDesign;
   Calendar calendar;
 
-  DropdownList calendarManede;
-  int y;
+  int year;
   long millisTotal = 0L;
   boolean bLeapYear;
   long millisInLeapYear = 31622400000L;
@@ -25,35 +22,30 @@ class HomePage {
   float gridX;
   float gridY;
   int daysAMonth;
+  int amountOfDaysRemove;
+  int dayToShow;
 
-  float dropDownXpos;
   String[] monthNames = {"Jan", "Feb", "Mar", "Api", "Maj", "Jun", "Jul", "Augt", "Sep", "Okt", "Nov", "Dec"};
   String[] dayNames = {"Man", "Tir", "ons", "Tor", "Fre", "Lor", "Son"};
-  int dropDownValue;
+  int monthValue;
 
-  HomePage(ControlP5 cp5) {
-    y = year();
+  HomePage() {
+    year = year();
     millisCal();
 
-    dropDownXpos = height/20*2;
     if (height > width) {
       calendarSquar = width/9;
     }
     if (width > height) {
       calendarSquar = height/9;
     }
-    calendarManede = cp5.addDropdownList("manede").setPosition(width/2-50, dropDownXpos).plugTo(this).setOpen(false);
     
     gridX = calendarSquar;
     gridY = calendarSquar;
 
     appDesign = new AppDesign(pageName);
     calendar = new GregorianCalendar();
-    this.cp5 = cp5;
-    cp5.setAutoDraw(false);
-
-    
-    calendarManede.addItems(monthNames);
+    monthValue = month();
   }
 
   void display() {
@@ -63,16 +55,26 @@ class HomePage {
     background(0);
 
     appDesign.draw();
-    cp5.draw();
 
-    cp5ValueConverter();
     dayCal();
     yearDebug();
+    monthPicker();
     calendarGrid();
+  }
+  
+  void monthPicker(){
+    fill(255);
+    rect(width/2 - 3.5 * calendarSquar, calendarSquar, 7*calendarSquar, calendarSquar);
+    
+    fill(0);
+    triangle(width/2 - 3.25 * calendarSquar, 1.5 * calendarSquar, width/2 - 3 * calendarSquar, 1.25 * calendarSquar, width/2 - 3 * calendarSquar, 1.75 * calendarSquar);
+    triangle(width/2 + 3.25 * calendarSquar, 1.5 * calendarSquar, width/2 + 3 * calendarSquar, 1.25 * calendarSquar, width/2 + 3 * calendarSquar, 1.75 * calendarSquar);
+    textAlign(CENTER,CENTER);
+    text(monthNames[monthValue-1] + " " + year, width/2, 1.5 * calendarSquar);
   }
 
   void millisCal() {
-    for (int i = 1970; i < y; i++) {
+    for (int i = 1970; i < year; i++) {
       if (i % 400 == 0) {
         bLeapYear = true;
       } else if (i % 100 == 0) {
@@ -91,21 +93,19 @@ class HomePage {
     millisTotal -= 3600000L;
   }
 
-  void cp5ValueConverter() {
-    dropDownValue = int(calendarManede.getValue());
-  }
   void dayCal() {
     fill(255);
-    if (dropDownValue == 0 || dropDownValue == 2 || dropDownValue == 4 || dropDownValue == 6 || dropDownValue == 7 || dropDownValue == 9 || dropDownValue == 11) {
+    if (monthValue == 1 || monthValue == 3 || monthValue == 5 || monthValue == 7 || monthValue == 8 || monthValue == 10 || monthValue == 12) {
       text("31 dage", width/2, height/2 + 100);
       daysAMonth = 31;
+      amountOfDaysRemove = 1;
     }
-    if (dropDownValue == 1) {
-      if (y % 400 == 0) {
+    if (monthValue == 2) {
+      if (year % 400 == 0) {
         bLeapYear = true;
-      } else if (y % 100 == 0) {
+      } else if (year % 100 == 0) {
         bLeapYear = false;
-      } else if (y % 4 == 0) {
+      } else if (year % 4 == 0) {
         bLeapYear =true;
       } else {
         bLeapYear = false;
@@ -113,58 +113,91 @@ class HomePage {
       if (bLeapYear) {
         text("29 dage", width/2, height/2 + 100);
         daysAMonth = 29;
+        amountOfDaysRemove = 10;
       } else {
+        daysAMonth = 28;
+        amountOfDaysRemove = 4;
         text("28 dage", width/2, height/2 + 100);
       }
     }
 
-    if (dropDownValue == 3 || dropDownValue == 5 || dropDownValue == 8 || dropDownValue == 10) {
+    if (monthValue == 4 || monthValue == 6 || monthValue == 9 || monthValue == 11) {
       text("30 dage", width/2, height/2 + 100);
       daysAMonth = 30;
+      amountOfDaysRemove = 2;
     }
   }
 
   void calendarGrid() {
-    calendar.set(Calendar.MONTH, dropDownValue);
+    calendar.set(Calendar.MONTH, monthValue);
     calendar.set(Calendar.DAY_OF_MONTH, 1);
+    calendar.set(Calendar.YEAR, year);
     dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 
     for (int i = 0; i < 7; i++) {
       for (int j = 0; j < 6; j++) {
-        //int index = i + j;
         stroke(0);
         strokeWeight(1);
         fill(255);
-        rect(i * calendarSquar + (width/2 - 3.5 * calendarSquar), j * calendarSquar + calendarSquar, calendarSquar, calendarSquar);
+        rect(i * calendarSquar + (width/2 - 3.5 * calendarSquar), j * calendarSquar + calendarSquar*2, calendarSquar, calendarSquar);
 
         fill(255);
         textAlign(CENTER, CENTER);
-        if ((i - dayOfWeek + 3) + j * 7 > 0 && (i - dayOfWeek + 2) + j * 7 < daysAMonth) {
+        if ((i - dayOfWeek - amountOfDaysRemove) + j * 7 > 0 && (i - dayOfWeek + 2) + j * 7 < daysAMonth + amountOfDaysRemove + 3) {
           fill(0);
         } else {
           fill(255);
         }
-        text((i - dayOfWeek + 3) + j*7, calendarSquar * i + (width/2 - 3 * calendarSquar), j * calendarSquar + 1.5 * calendarSquar);
+        text((i - dayOfWeek - amountOfDaysRemove) + j * 7, calendarSquar * i + (width/2 - 3 * calendarSquar), j * calendarSquar + 2.5 * calendarSquar);
       }
-    }
-  }
-
-  void yearDebug() {
-    if (y % 400 == 0) {
-      bLeapYear = true;
-    } else if (y % 100 == 0) {
-      bLeapYear = false;
-    } else if (y % 4 == 0) {
-      bLeapYear =true;
-    } else {
-      bLeapYear = false;
-    }
-    if (bLeapYear) {
-    } else {
     }
   }
 
   int pageNumberReturn() {
     return appDesign.programState;
+  }
+  
+  void mouseReleased(){
+    if(mouseX >= width/2 - 3.25 * calendarSquar && mouseX <= width/2 - 3 * calendarSquar && mouseY >= 1.25 * calendarSquar && mouseY <= 1.75 * calendarSquar){
+      monthValue -= 1;
+    }
+    if(mouseX <= width/2 + 3.25 * calendarSquar && mouseX >= width/2 + 3 * calendarSquar && mouseY >= 1.25 * calendarSquar && mouseY <= 1.75 * calendarSquar){
+      monthValue += 1;
+    }
+    if(monthValue <= 0){
+      monthValue = 12;
+      year -= 1;
+    }
+    if(monthValue >= 13){
+      monthValue = 1;
+      year += 1;
+    }
+  }
+  
+  void mousePressed(){
+    for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < 6; j++) {
+        if(mouseX >= i * calendarSquar + (width/2 - 3.5 * calendarSquar) && mouseX <= i * calendarSquar + (width/2 - 3.5 * calendarSquar)+calendarSquar &&
+          mouseY >= j * calendarSquar + calendarSquar * 2 && mouseY <= j * calendarSquar + calendarSquar * 3){
+          dayToShow = (i - dayOfWeek - amountOfDaysRemove);
+        }
+      }
+    }
+  }
+  
+  void yearDebug() {
+    if (year % 400 == 0) {
+      bLeapYear = true;
+    } else if (year % 100 == 0) {
+      bLeapYear = false;
+    } else if (year % 4 == 0) {
+      bLeapYear =true;
+    } else {
+      bLeapYear = false;
+    }
+    if (bLeapYear) {
+    } 
+    else {
+    }
   }
 }

@@ -143,6 +143,7 @@ class AddTask{
       text("Ja", width/2-40, 595);
       fill(0,0,255);
     }
+    stroke(255);
     rect(width/2, 600, 20, 20);
   }
   

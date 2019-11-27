@@ -13,6 +13,11 @@ void setup(){
   fullScreen();
   
   cp5 = new ControlP5(this);
+  homePage = new HomePage();
+  settings = new Settings();
+  profile = new Profile();
+  addTask = new AddTask(cp5);
+  stats = new Stats();
 }
 
 void draw(){
@@ -23,33 +28,37 @@ void draw(){
 void pageMan(){
   switch (pageNumber){
     case 0:
-      homePage = new HomePage(cp5);
       homePage.display();
       pageNumber = homePage.pageNumberReturn();
       break;
       
     case 1: 
-      settings = new Settings();
       settings.display();
       pageNumber = settings.pageNumberReturn();
       break;
       
     case 2:
-      profile = new Profile();
       profile.display();
       pageNumber = profile.pageNumberReturn();
       break;
     
     case 3:
-      addTask = new AddTask(cp5);
       addTask.display();
       pageNumber = addTask.pageNumberReturn();
       break;
       
     case 4:
-      stats = new Stats();
       stats.display();
       pageNumber = stats.pageNumberReturn();
       break;
   }
+}
+
+void mousePressed(){
+  homePage.mousePressed();
+  addTask.mousePressed();
+}
+
+void mouseReleased(){
+  homePage.mouseReleased();
 }

@@ -13,7 +13,6 @@ class AppDesign{
   
   AppDesign(String pageTitle){
     
-    //programState = 0;
     logoSize = height/20;
     
     settingsLogo = loadImage("Settings_black.png");
