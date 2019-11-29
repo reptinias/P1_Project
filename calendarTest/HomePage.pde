@@ -8,13 +8,22 @@ class HomePage {
   Calendar calendar;
 
   int year;
-  long millisTotal = 0L;
   boolean bLeapYear;
+  String pageName = "Home";
+  
+  long yearMillisTotal = 0L;
   long millisInLeapYear = 31622400000L;
   long millisInNormalYear = 31536000000L;
-  String pageName = "Home";
-
+  long millis31Day = 2678400000L;
+  long millis30Day = 2592000000L;
+  long millis29Day = 2505600000L;
+  long millis28Day = 2419200000L;
   int millisInDay = 86400000;
+  
+  long[] monthMillisTotal = {0, millis31Day, millis28Day + millis31Day, millis28Day + millis31Day * 2, millis28Day + millis31Day * 2 + millis30Day,
+                            millis28Day + millis31Day * 3 + millis30Day, millis28Day + millis31Day * 3 + millis30Day * 2, millis28Day + millis31Day * 4 + millis30Day * 2,
+                            millis28Day + millis31Day * 5 + millis30Day * 2, millis28Day + millis31Day * 5 + millis30Day * 3, millis28Day + millis31Day * 6 + millis30Day * 3,
+                            millis28Day + millis31Day * 6 + millis30Day * 4};
   int dayOfWeek;
   int rowNumber = 1;
 
@@ -24,10 +33,15 @@ class HomePage {
   int daysAMonth;
   int amountOfDaysRemove;
   int dayToShow;
+  long millisToShow;
 
   String[] monthNames = {"Jan", "Feb", "Mar", "Api", "Maj", "Jun", "Jul", "Augt", "Sep", "Okt", "Nov", "Dec"};
   String[] dayNames = {"Man", "Tir", "ons", "Tor", "Fre", "Lor", "Son"};
   int monthValue;
+
+  Table taskDatabase;
+  Table taskTable;
+  float taskArray[];
 
   HomePage() {
     year = year();
@@ -46,6 +60,10 @@ class HomePage {
     appDesign = new AppDesign(pageName);
     calendar = new GregorianCalendar();
     monthValue = month();
+    
+    taskDatabase = loadTable("taskDatabase.csv", "header");
+    taskTable = loadTable("taskTimeStamps.csv", "header");
+    taskArray = new float[0];
   }
 
   void display() {
@@ -59,6 +77,7 @@ class HomePage {
     dayCal();
     yearDebug();
     monthPicker();
+    taskDisplayer();
     calendarGrid();
   }
   
@@ -80,17 +99,17 @@ class HomePage {
       } else if (i % 100 == 0) {
         bLeapYear = false;
       } else if (i % 4 == 0) {
-        bLeapYear =true;
+        bLeapYear = true;
       } else {
         bLeapYear = false;
       }
       if (bLeapYear) {
-        millisTotal += millisInLeapYear;
+        yearMillisTotal += millisInLeapYear;
       } else {
-        millisTotal += millisInNormalYear;
+        yearMillisTotal += millisInNormalYear;
       }
     }
-    millisTotal -= 3600000L;
+    yearMillisTotal -= 3600000L;
   }
 
   void dayCal() {
@@ -152,6 +171,30 @@ class HomePage {
       }
     }
   }
+  
+  void updateTaskArray(){
+    taskArray = (float[]) subset(taskArray, 0, taskArray.length);
+    for(int i = 0; i < taskTable.getRowCount(); i++){
+      TableRow row = taskTable.getRow(i);
+      long startTime = row.getLong("start");
+      if(startTime >= millisToShow && startTime <= millisToShow + millisInDay){
+        float idNumber = row.getFloat("id");
+        taskArray = (float[]) append(taskArray, idNumber);
+      }
+    }
+  }
+  
+  void taskDisplayer(){
+    fill(255);
+    rect(width/2 - 3 * calendarSquar, 8*calendarSquar, 6*calendarSquar, 100 * taskArray.length);
+    for(int i = 0; i < taskArray.length; i++){
+      int taskId = floor(taskArray[i]);
+      TableRow row = taskDatabase.getRow(taskId);
+      String taskName = row.getString("name");
+      fill(0);
+      text(taskName, width/2, 700 + 100 * i);
+    }
+  }
 
   int pageNumberReturn() {
     return appDesign.programState;
@@ -175,11 +218,22 @@ class HomePage {
   }
   
   void mousePressed(){
-    for (int i = 0; i < 7; i++) {
-      for (int j = 0; j < 6; j++) {
+    for (int j = 0; j < 6; j++) {
+      for (int i = 0; i < 7; i++) {
         if(mouseX >= i * calendarSquar + (width/2 - 3.5 * calendarSquar) && mouseX <= i * calendarSquar + (width/2 - 3.5 * calendarSquar)+calendarSquar &&
           mouseY >= j * calendarSquar + calendarSquar * 2 && mouseY <= j * calendarSquar + calendarSquar * 3){
-          dayToShow = (i - dayOfWeek - amountOfDaysRemove);
+          dayToShow = (i - dayOfWeek - amountOfDaysRemove) + j * 7;
+          millisToShow = yearMillisTotal + (dayToShow - 1) * millisInDay + monthMillisTotal[monthValue - 1];
+          
+          if(monthValue == 2 && bLeapYear == true){
+            millisToShow += millisInDay;
+          }
+          println(dayToShow);
+          println(dayOfWeek);
+          println(millisToShow);
+          
+          
+          updateTaskArray();
         }
       }
     }
