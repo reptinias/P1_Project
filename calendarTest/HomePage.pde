@@ -72,7 +72,7 @@ class HomePage {
 
   void display() {
     textAlign(CENTER, CENTER);
-    textSize(calendarSquar/3*2);
+    textSize(calendarSquar/3);
     fill(255);
     background(0);
 
@@ -223,11 +223,27 @@ class HomePage {
     if (showTaskWindow == true) {
       rectMode(CENTER);
       rect(width/2, height/2, taskWindowW, taskWindowH);
-
-      TableRow rowToUse = taskDatabase.findRow("id", taskToDisplay);
-      textAlign(CENTER, CENTER);
-      println(taskToDisplay);
-      text(rowToUse.getString("name"), width/2, taskWindowH/20);
+      
+      textSize(calendarSquar/3);
+      fill(0);
+      TableRow row = taskDatabase.getRow(taskToDisplay-1);
+      
+      String taskName = row.getString("name");
+      text(taskName, width/2, height/2 - taskWindowH/2.2);
+      
+      String taskDescription = row.getString("description");
+      text(taskDescription, width/2, height/2 - taskWindowH/2.6);
+      
+      int taskMonth = row.getInt("month");
+      int taskDay = row.getInt("day");
+      int taskHour = row.getInt("hour");
+      int taskMinut = row.getInt("minut");
+      text("dato: " + taskDay + "/" + monthNames[taskMonth], width/2, height/2 + taskWindowH/3.4);
+      text("klokken: " + taskHour + ":" + taskMinut, width/2, height/2 + taskWindowH/2.8);
+      
+      if(row.getInt("completed") == 0){
+        text("Denne opgave er ikke klaret", width/2, height/2 + taskWindowH/2.4);
+      }
     }
   }
 
@@ -252,23 +268,6 @@ class HomePage {
       monthValue = 1;
       year += 1;
     }
-  }
-
-  void mousePressed() {
-    for (int j = 0; j < 6; j++) {
-      for (int i = 0; i < 7; i++) {
-        if (mouseX >= i * calendarSquar + (width/2 - 3.5 * calendarSquar) && mouseX <= i * calendarSquar + (width/2 - 3.5 * calendarSquar)+calendarSquar &&
-          mouseY >= j * calendarSquar + calendarSquar * 2 && mouseY <= j * calendarSquar + calendarSquar * 3) {
-          dayToShow = (i - dayOfWeek - amountOfDaysRemove) + j * 7;
-          millisToShow = yearMillisTotal + (dayToShow - 1) * millisInDay + monthMillisTotal[monthValue - 1];
-
-          if (monthValue == 2 && bLeapYear == true) {
-            millisToShow += millisInDay;
-          }         
-          updateTaskArray();
-        }
-      }
-    }
     if (taskArray.length != 0) {
       for (int i = 0; i < taskArray.length; i++) {
         if (mouseX >= width/2 - 3 * calendarSquar && mouseX <= width/2 + 3 * calendarSquar && 
@@ -280,4 +279,28 @@ class HomePage {
       }
     }
   }
+
+  void mousePressed() {
+    if(showTaskWindow != true){ 
+      for (int j = 0; j < 6; j++) {
+        for (int i = 0; i < 7; i++) {
+          if (mouseX >= i * calendarSquar + (width/2 - 3.5 * calendarSquar) && mouseX <= i * calendarSquar + (width/2 - 3.5 * calendarSquar)+calendarSquar &&
+            mouseY >= j * calendarSquar + calendarSquar * 2.5 && mouseY <= j * calendarSquar + calendarSquar * 3.5) {
+            dayToShow = (i - dayOfWeek - amountOfDaysRemove) + j * 7;
+            millisToShow = yearMillisTotal + (dayToShow - 1) * millisInDay + monthMillisTotal[monthValue - 1];
+  
+            if (monthValue == 2 && bLeapYear == true) {
+              millisToShow += millisInDay;
+            }         
+            updateTaskArray();
+          }
+        }
+      }
+    }
+    if(showTaskWindow == true){
+      println("SUP MY DUDE");
+      showTaskWindow = false;
+    }
+  }
+   
 }
