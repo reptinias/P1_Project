@@ -4,12 +4,13 @@ import controlP5.*;
 class AddTask{
 
   ControlP5 cp5;
-  
+  TaskAddBackEnd taskAddBack;
   AppDesign appDesign;
   String pageTitle = "Tilføje opgave";
   
   String taskName;
   String taskDescription;
+  int taskYear;
   int taskMonth;
   int taskDay;
   int taskHour;
@@ -22,6 +23,7 @@ class AddTask{
   Table taskTable;
   
   //Declare dropdown lists from controlP5 libary
+  DropdownList yearDropDown;
   DropdownList monthDropDown;
   DropdownList dayDropDown;
   DropdownList hourDropDown;
@@ -47,16 +49,22 @@ class AddTask{
     taskDescription = "";
     
     taskTable = loadTable("taskDatabase.csv", "header");
+    
+    yearDropDown = cp5.addDropdownList("Velg ar").setPosition(width/2-302, dropDownXpos);
     monthDropDown = cp5.addDropdownList("Velg manede").setPosition(width/2-102, dropDownXpos);
     dayDropDown = cp5.addDropdownList("Velg dag").setPosition(width/2-202, dropDownXpos);
     hourDropDown = cp5.addDropdownList("Time").setPosition(width/2+2, dropDownXpos);
     minutDropDown = cp5.addDropdownList("Minutter").setPosition(width/2+102, dropDownXpos);
     
+    yearDropDown.setOpen(false);
     monthDropDown.setOpen(false);
     dayDropDown.setOpen(false);
     hourDropDown.setOpen(false);
     minutDropDown.setOpen(false);
     
+    for(int i = year(); i < year() + 10; i++){
+      yearDropDown.addItem("" + i, i);
+    }
     for (int i=0; i<12; i++) {
       monthDropDown.addItem("" + (i+1),i+1);
     }
@@ -71,7 +79,7 @@ class AddTask{
     
     cp5.addTextfield("taskName").setPosition(width/2-100, taskNameXpos).setSize(200, 40).setAutoClear(false);
     cp5.addTextfield("taskDescription").setPosition(width/2-100, taskDescriptionXpos).setSize(200, 100).setAutoClear(false);
-    cp5.addTextfield("taskDuration").setPosition(width/2-100, taskDurationXpos).setSize(200, 40).setAutoClear(false).setInputFilter(ControlP5.INTEGER);
+    cp5.addTextfield("taskDuration").setPosition(width/2-100, taskDurationXpos).setSize(200, 40).setAutoClear(false).setInputFilter(ControlP5.FLOAT);
     
     oneDayTask = 0;
     
@@ -113,6 +121,7 @@ class AddTask{
   }
   
   void cp5ValueConverter(){
+    taskYear = int(yearDropDown.getValue());
     taskMonth = int(monthDropDown.getValue());
     taskDay = int(dayDropDown.getValue());
     taskHour = int(hourDropDown.getValue());
@@ -171,15 +180,18 @@ class AddTask{
       row.setInt("id", taskTable.getRowCount());
       row.setString("name", taskName);
       row.setString("description", taskDescription);
+      row.setInt("year", taskYear);
       row.setInt("month", taskMonth);
       row.setInt("day", taskDay);
       row.setInt("hour", taskHour);
       row.setInt("minut", taskMinut);
-      row.setInt("duration", int(taskDuration));
+      row.setFloat("duration", taskDuration);
       row.setInt("rate", taskRate);
       row.setInt("oneDayTask", oneDayTask);
       row.setInt("completed", 0);
       saveTable(taskTable, "taskDatabase.csv");
+      
+      taskAddBack = new TaskAddBackEnd(taskTable.getRowCount(), taskYear, taskMonth, taskDay, taskHour, taskMinut, taskDuration, taskRate, oneDayTask);
     }
   }
   

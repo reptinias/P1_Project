@@ -16,7 +16,7 @@ class HomePage {
   long millisInNormalYear = 31536000000L;
   long millis31Day = 2678400000L;
   long millis30Day = 2592000000L;
-  long millis29Day = 2505600000L;
+  //long millis29Day = 2505600000L;
   long millis28Day = 2419200000L;
   int millisInDay = 86400000;
 
@@ -34,7 +34,7 @@ class HomePage {
   int dayToShow;
   long millisToShow;
 
-  String[] monthNames = {"Jan", "Feb", "Mar", "Api", "Maj", "Jun", "Jul", "Augt", "Sep", "Okt", "Nov", "Dec"};
+  String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Augt", "Sep", "Okt", "Nov", "Dec"};
   String[] dayNames = {"Man", "Tir", "ons", "Tor", "Fre", "Lor", "Son"};
   int monthValue;
 
@@ -89,7 +89,8 @@ class HomePage {
   void monthPicker() {
     fill(255);
     rect(width/2 - 3.5 * calendarSquar, calendarSquar, 7*calendarSquar, calendarSquar);
-
+    
+    textSize(calendarSquar/3*2);
     fill(0);
     triangle(width/2 - 3.25 * calendarSquar, 1.5 * calendarSquar, width/2 - 3 * calendarSquar, 1.25 * calendarSquar, width/2 - 3 * calendarSquar, 1.75 * calendarSquar);
     triangle(width/2 + 3.25 * calendarSquar, 1.5 * calendarSquar, width/2 + 3 * calendarSquar, 1.25 * calendarSquar, width/2 + 3 * calendarSquar, 1.75 * calendarSquar);
@@ -120,7 +121,6 @@ class HomePage {
   void dayCal() {
     fill(255);
     if (monthValue == 1 || monthValue == 3 || monthValue == 5 || monthValue == 7 || monthValue == 8 || monthValue == 10 || monthValue == 12) {
-      text("31 dage", width/2, height/2 + 100);
       daysAMonth = 31;
       amountOfDaysRemove = 1;
     }
@@ -135,18 +135,15 @@ class HomePage {
         bLeapYear = false;
       }
       if (bLeapYear) {
-        text("29 dage", width/2, height/2 + 100);
         daysAMonth = 29;
         amountOfDaysRemove = 10;
       } else {
         daysAMonth = 28;
         amountOfDaysRemove = 4;
-        text("28 dage", width/2, height/2 + 100);
       }
     }
 
     if (monthValue == 4 || monthValue == 6 || monthValue == 9 || monthValue == 11) {
-      text("30 dage", width/2, height/2 + 100);
       daysAMonth = 30;
       amountOfDaysRemove = 2;
     }
@@ -155,7 +152,7 @@ class HomePage {
   void dayGrid(){
     fill(255);
     stroke(2);
-    //textSize(30);
+    textSize(calendarSquar/3);
     textAlign(CENTER,CENTER);
     fill(255);
     for(int i = 0; i < 7; i++){
@@ -179,7 +176,8 @@ class HomePage {
         strokeWeight(1);
         fill(255);
         rect(i * calendarSquar + (width/2 - 3.5 * calendarSquar), j * calendarSquar + calendarSquar*2.5, calendarSquar, calendarSquar);
-
+        
+        textSize(calendarSquar/3*1.5);
         fill(255);
         textAlign(CENTER, CENTER);
         if ((i - dayOfWeek - amountOfDaysRemove) + j * 7 > 0 && (i - dayOfWeek + 2) + j * 7 < daysAMonth + amountOfDaysRemove + 3) {
@@ -212,7 +210,8 @@ class HomePage {
 
       fill(255);
       rect(width/2 - 3 * calendarSquar, 8.5 * calendarSquar+calendarSquar*i, 6 * calendarSquar, calendarSquar);
-
+      
+      textSize(calendarSquar/3*1.5);
       fill(0);
       textAlign(CENTER, TOP);
       text(taskName, width/2, 8.5 * calendarSquar + calendarSquar * i);
@@ -244,6 +243,9 @@ class HomePage {
       if(row.getInt("completed") == 0){
         text("Denne opgave er ikke klaret", width/2, height/2 + taskWindowH/2.4);
       }
+      if(row.getInt("completed") == 1){
+        text("Denne opgave er klaret", width/2, height/2 + taskWindowH/2.4);
+      }
     }
   }
 
@@ -274,7 +276,6 @@ class HomePage {
           mouseY >= 8.5 * calendarSquar + i * calendarSquar && mouseY <= 9.5 * calendarSquar + i * calendarSquar) {
           showTaskWindow = true;
           taskToDisplay = floor(taskArray[i]);
-          println(taskToDisplay);
         }
       }
     }
@@ -298,7 +299,6 @@ class HomePage {
       }
     }
     if(showTaskWindow == true){
-      println("SUP MY DUDE");
       showTaskWindow = false;
     }
   }

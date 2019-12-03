@@ -48,7 +48,6 @@ class AppDesign{
   void homeButton(){
     image(homeLogo, 0, height-logoSize);
     if(mousePressed && mouseX >= 0 && mouseX <= logoSize && mouseY >= height - logoSize && mouseY <= height){
-      println("home");
       programState = 0;
     }
   }  
@@ -56,7 +55,6 @@ class AppDesign{
   void settingsButton(){
     image(settingsLogo, 0, 0);
     if(mousePressed && mouseX >= 0 && mouseX <= logoSize && mouseY >= 0 && mouseY <= logoSize){
-      println("settings");
       programState = 1;
     }
   }
@@ -64,7 +62,6 @@ class AppDesign{
   void profileButton(){
     image(profileLogo, width - logoSize, 0);
     if(mousePressed && mouseX >= width-logoSize && mouseX <= width && mouseY >= 0 && mouseY <= logoSize){
-      println("profile");
       programState = 2;
     }
   }
@@ -72,7 +69,6 @@ class AppDesign{
   void addTaskButton(){
     image(addLogo, width/2 - logoSize/2, height-logoSize);
     if(mousePressed && mouseX >= width/2 - logoSize/2 && mouseX <= width/2 + logoSize/2 && mouseY >= height - logoSize && mouseY <= height){
-      println("add task");
       programState = 3;
     }
   }
@@ -80,7 +76,6 @@ class AppDesign{
   void statsButton(){
     image(statsLogo, width-logoSize, height-logoSize);
     if(mousePressed && mouseX >= width - logoSize && mouseX <= width && mouseY >= height - logoSize && mouseY <= height){
-      println("stats");
       programState = 4;
     }
   }
