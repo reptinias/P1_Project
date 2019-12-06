@@ -40,7 +40,7 @@ class HomePage {
 
   Table taskDatabase;
   Table taskTable;
-  float taskArray[];
+  int taskArray[];
 
   int taskToDisplay;
   boolean showTaskWindow = false;
@@ -67,7 +67,7 @@ class HomePage {
 
     taskDatabase = loadTable("taskDatabase.csv", "header");
     taskTable = loadTable("taskTimeStamps.csv", "header");
-    taskArray = new float[0];
+    taskArray = new int[0];
   }
   
   void updateCalendar(){
@@ -197,13 +197,13 @@ class HomePage {
   }
 
   void updateTaskArray() {
-    taskArray = new float[0];
+    taskArray = new int[0];
     for (int i = 0; i < taskTable.getRowCount(); i++) {
       TableRow row = taskTable.getRow(i);
-      long startTime = row.getLong("start");
+      double startTime = row.getDouble("start");
       if (startTime >= millisToShow && startTime <= millisToShow + millisInDay) {
         float idNumber = row.getFloat("id");
-        taskArray = (float[]) append(taskArray, idNumber);
+        taskArray = (int[]) append(taskArray, floor(idNumber));
       }
     }
   }
@@ -262,11 +262,11 @@ class HomePage {
   void mouseReleased() {
     if (mouseX >= width/2 - 3.25 * calendarSquar && mouseX <= width/2 - 3 * calendarSquar && mouseY >= 1.25 * calendarSquar && mouseY <= 1.75 * calendarSquar) {
       monthValue -= 1;
-      taskArray = new float[0];
+      taskArray = new int[0];
     }
     if (mouseX <= width/2 + 3.25 * calendarSquar && mouseX >= width/2 + 3 * calendarSquar && mouseY >= 1.25 * calendarSquar && mouseY <= 1.75 * calendarSquar) {
       monthValue += 1;
-      taskArray = new float[0];
+      taskArray = new int[0];
     }
     if (monthValue <= 0) {
       monthValue = 12;

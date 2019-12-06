@@ -32,9 +32,9 @@ class TaskAddBackEnd {
     millis28Day + millis31Day * 6 + millis30Day * 4};
 
   long taskTime;
-  long[] timeStampStartArray;
+  double[] timeStampStartArray;
   double[] timeStampEndArray;
-  long timeStampStart;
+  double timeStampStart;
   double timeStampEnd;
   int extraDay;
 
@@ -42,7 +42,7 @@ class TaskAddBackEnd {
     taskDatabase = loadTable("taskDatabase.csv", "header");
     taskTimeStamps = loadTable("taskTimeStamps.csv", "header");
 
-    timeStampStartArray = new long[0];
+    timeStampStartArray = new double[0];
     timeStampEndArray = new double[0];
 
     this.id = id;
@@ -154,25 +154,26 @@ class TaskAddBackEnd {
 
     for (int j = 0; j < taskTimeStamps.getRowCount(); j++) {
       TableRow row = taskTimeStamps.getRow(j);
-
-      if (timeStampStart >= row.getLong("start") && timeStampStart <= (long)(row.getDouble("slut"))) {
-        timeStampStart = (long)(row.getDouble("slut")) + millisInPause;
-      } else if (timeStampEnd >= row.getLong("start") && timeStampEnd <= (long)(row.getDouble("slut"))) {
-        timeStampStart = (long)(row.getDouble("slut")) + millisInPause;
-      } else if (row.getLong("start") >= timeStampStart && row.getLong("start") <= timeStampEnd) {
-        timeStampStart = (long)(row.getDouble("slut")) + millisInPause;
-      } else {
-        timeStampStartArray = (long[]) append(timeStampStartArray, timeStampStart);
-        timeStampEndArray = (double[]) append(timeStampEndArray, timeStampEnd);
-        break;
+      println(row.getDouble("start"));
+      println(row.getDouble("slut"));
+      timeStampEnd = timeStampStart + (double)(millisInHour);
+      
+      if (timeStampStart >= row.getDouble("start") && timeStampStart <= row.getDouble("slut")) {
+        timeStampStart = row.getDouble("slut") + millisInPause;
+      } else if (timeStampEnd >= row.getDouble("start") && timeStampEnd <= row.getDouble("slut")) {
+        timeStampStart = row.getDouble("slut") + millisInPause;
+      } else if (row.getDouble("start") >= timeStampStart && row.getDouble("start") <= timeStampEnd) {
+        timeStampStart = row.getDouble("slut") + millisInPause;
       }
     }
+    timeStampStartArray = (double[]) append(timeStampStartArray, timeStampStart);
+    timeStampEndArray = (double[]) append(timeStampEndArray, timeStampEnd);
+        
     while (timeStampEndArray[i] >= thisYearInMillis + monthMillisTotal[month() - 1] + ((long)(day() + extraDay) * millisInDay) + (long)(8 * millisInHour)) {
       extraDay++;
     }
 
     timeStampStart = thisYearInMillis + monthMillisTotal[month() - 1] + ((long)(day() + extraDay) * millisInDay) + (long)(8 * millisInHour);
-    timeStampEnd = timeStampStart + millisInHour;
   }
 
   void updateDatasheet() {
@@ -181,7 +182,7 @@ class TaskAddBackEnd {
       for (int i = 0; i < timeStampStartArray.length; i++) {
         TableRow row = taskTimeStamps.addRow();
         row.setFloat("id", id + float(i)/float(100));
-        row.setLong("start", timeStampStartArray[i]);
+        row.setDouble("start", timeStampStartArray[i]);
         row.setDouble("slut", timeStampEndArray[i]);
         saveTable(taskTimeStamps, "taskTimeStamps.csv");
       }
@@ -192,7 +193,7 @@ class TaskAddBackEnd {
       timeStampStart = taskTime;
       timeStampEnd = taskTime + (taskDuration * millisInHour);
       row.setFloat("id", id);
-      row.setLong("start", timeStampStart);
+      row.setDouble("start", timeStampStart);
       row.setDouble("slut", timeStampEnd);
       saveTable(taskTimeStamps, "taskTimeStamps.csv");
       println("oneDayTask skulle være gemt");
