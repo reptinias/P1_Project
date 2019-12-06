@@ -69,7 +69,12 @@ class HomePage {
     taskTable = loadTable("taskTimeStamps.csv", "header");
     taskArray = new float[0];
   }
-
+  
+  void updateCalendar(){
+    taskDatabase = loadTable("taskDatabase.csv", "header");
+    taskTable = loadTable("taskTimeStamps.csv", "header");
+  }
+  
   void display() {
     textAlign(CENTER, CENTER);
     textSize(calendarSquar/3);
@@ -89,7 +94,7 @@ class HomePage {
   void monthPicker() {
     fill(255);
     rect(width/2 - 3.5 * calendarSquar, calendarSquar, 7*calendarSquar, calendarSquar);
-    
+
     textSize(calendarSquar/3*2);
     fill(0);
     triangle(width/2 - 3.25 * calendarSquar, 1.5 * calendarSquar, width/2 - 3 * calendarSquar, 1.25 * calendarSquar, width/2 - 3 * calendarSquar, 1.75 * calendarSquar);
@@ -99,6 +104,7 @@ class HomePage {
   }
 
   void millisCal() {
+    yearMillisTotal = 0;
     for (int i = 1970; i < year; i++) {
       if (i % 400 == 0) {
         bLeapYear = true;
@@ -148,18 +154,18 @@ class HomePage {
       amountOfDaysRemove = 2;
     }
   }
-  
-  void dayGrid(){
+
+  void dayGrid() {
     fill(255);
     stroke(2);
     textSize(calendarSquar/3);
-    textAlign(CENTER,CENTER);
+    textAlign(CENTER, CENTER);
     fill(255);
-    for(int i = 0; i < 7; i++){
+    for (int i = 0; i < 7; i++) {
       rect(i * calendarSquar + (width/2 - 3.5 * calendarSquar), 2 * calendarSquar, calendarSquar, calendarSquar/2);
     }
     fill(0);
-    for(int i = 0; i < 7; i++){
+    for (int i = 0; i < 7; i++) {
       text(dayNames[i], i * calendarSquar + (width/2 - 3 * calendarSquar), 2.25 * calendarSquar);
     }
   }
@@ -176,7 +182,7 @@ class HomePage {
         strokeWeight(1);
         fill(255);
         rect(i * calendarSquar + (width/2 - 3.5 * calendarSquar), j * calendarSquar + calendarSquar*2.5, calendarSquar, calendarSquar);
-        
+
         textSize(calendarSquar/3*1.5);
         fill(255);
         textAlign(CENTER, CENTER);
@@ -210,7 +216,7 @@ class HomePage {
 
       fill(255);
       rect(width/2 - 3 * calendarSquar, 8.5 * calendarSquar+calendarSquar*i, 6 * calendarSquar, calendarSquar);
-      
+
       textSize(calendarSquar/3*1.5);
       fill(0);
       textAlign(CENTER, TOP);
@@ -222,28 +228,28 @@ class HomePage {
     if (showTaskWindow == true) {
       rectMode(CENTER);
       rect(width/2, height/2, taskWindowW, taskWindowH);
-      
+
       textSize(calendarSquar/3);
       fill(0);
       TableRow row = taskDatabase.getRow(taskToDisplay-1);
-      
+
       String taskName = row.getString("name");
       text(taskName, width/2, height/2 - taskWindowH/2.2);
-      
+
       String taskDescription = row.getString("description");
       text(taskDescription, width/2, height/2 - taskWindowH/2.6);
-      
+
       int taskMonth = row.getInt("month");
       int taskDay = row.getInt("day");
       int taskHour = row.getInt("hour");
       int taskMinut = row.getInt("minut");
-      text("dato: " + taskDay + "/" + monthNames[taskMonth], width/2, height/2 + taskWindowH/3.4);
+      text("dato: " + taskDay + "/" + monthNames[taskMonth - 1], width/2, height/2 + taskWindowH/3.4);
       text("klokken: " + taskHour + ":" + taskMinut, width/2, height/2 + taskWindowH/2.8);
-      
-      if(row.getInt("completed") == 0){
+
+      if (row.getInt("completed") == 0) {
         text("Denne opgave er ikke klaret", width/2, height/2 + taskWindowH/2.4);
       }
-      if(row.getInt("completed") == 1){
+      if (row.getInt("completed") == 1) {
         text("Denne opgave er klaret", width/2, height/2 + taskWindowH/2.4);
       }
     }
@@ -265,10 +271,12 @@ class HomePage {
     if (monthValue <= 0) {
       monthValue = 12;
       year -= 1;
+      millisCal();
     }
     if (monthValue >= 13) {
       monthValue = 1;
       year += 1;
+      millisCal();
     }
     if (taskArray.length != 0) {
       for (int i = 0; i < taskArray.length; i++) {
@@ -282,15 +290,15 @@ class HomePage {
   }
 
   void mousePressed() {
-    if(showTaskWindow != true){ 
+    if (showTaskWindow != true) { 
       for (int j = 0; j < 6; j++) {
         for (int i = 0; i < 7; i++) {
           if (mouseX >= i * calendarSquar + (width/2 - 3.5 * calendarSquar) && mouseX <= i * calendarSquar + (width/2 - 3.5 * calendarSquar)+calendarSquar &&
             mouseY >= j * calendarSquar + calendarSquar * 2.5 && mouseY <= j * calendarSquar + calendarSquar * 3.5) {
             dayToShow = (i - dayOfWeek - amountOfDaysRemove) + j * 7;
-            millisToShow = yearMillisTotal + (dayToShow - 1) * millisInDay + monthMillisTotal[monthValue - 1];
-  
-            if (monthValue == 2 && bLeapYear == true) {
+            millisToShow = yearMillisTotal + ((dayToShow - 1) * (long)(millisInDay)) + monthMillisTotal[monthValue - 1];
+            println(millisToShow);
+            if (monthValue >= 2 && bLeapYear == true) {
               millisToShow += millisInDay;
             }         
             updateTaskArray();
@@ -298,9 +306,8 @@ class HomePage {
         }
       }
     }
-    if(showTaskWindow == true){
+    if (showTaskWindow == true) {
       showTaskWindow = false;
     }
   }
-   
 }

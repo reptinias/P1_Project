@@ -23,6 +23,13 @@ void setup(){
 void draw(){
   background(0);
   pageMan();
+  
+  /*if(pageNumber == 0){
+    addTask = new AddTask(cp5);
+  }
+  if(pageNumber == 3){
+    homePage.updateCalendar();
+  }*/
 }
 
 void pageMan(){
@@ -55,10 +62,25 @@ void pageMan(){
 }
 
 void mousePressed(){
-  homePage.mousePressed();
-  addTask.mousePressed();
+  switch (pageNumber){
+    case 0:
+    homePage.mousePressed();
+    break;
+    
+    case 3:
+    addTask.mousePressed();
+    break;
+  }
 }
 
 void mouseReleased(){
-  homePage.mouseReleased();
+  switch (pageNumber){
+    case 0:
+    homePage.mouseReleased();
+    break;
+    
+    case 3:
+    addTask.mouseReleased();
+    break;
+  }
 }

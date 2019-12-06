@@ -36,6 +36,8 @@ class AddTask{
   float taskDurationXpos = 400; 
   float sliderXpos = 500;
   
+  int[] yearArray = {2019, 2020, 2021, 2022, 2023, 2024, 2025};
+  
   color backgroundColor = color(0);
   
   AddTask(ControlP5 cp5){
@@ -62,8 +64,8 @@ class AddTask{
     hourDropDown.setOpen(false);
     minutDropDown.setOpen(false);
     
-    for(int i = year(); i < year() + 10; i++){
-      yearDropDown.addItem("" + i, i);
+    for(int i = 0; i < yearArray.length; i++){
+      yearDropDown.addItem("" + yearArray[i], i);
     }
     for (int i=0; i<12; i++) {
       monthDropDown.addItem("" + (i+1),i+1);
@@ -121,15 +123,15 @@ class AddTask{
   }
   
   void cp5ValueConverter(){
-    taskYear = int(yearDropDown.getValue());
-    taskMonth = int(monthDropDown.getValue());
-    taskDay = int(dayDropDown.getValue());
-    taskHour = int(hourDropDown.getValue());
-    taskMinut = int(minutDropDown.getValue());
+    taskYear = yearArray[int(yearDropDown.getValue())];
+    taskMonth = int(monthDropDown.getValue() + 1);
+    taskDay = int(dayDropDown.getValue() + 1);
+    taskHour = int(hourDropDown.getValue() + 1);
+    taskMinut = int(minutDropDown.getValue() * 15);
     taskName = cp5.get(Textfield.class,"taskName").getText();
     taskDescription = cp5.get(Textfield.class,"taskDescription").getText();
-    taskDuration = cp5.get(Textfield.class, "taskDuration").getValue();
-    taskRate = slider;
+    taskDuration = float(cp5.get(Textfield.class, "taskDuration").getText());
+    taskRate = int(cp5.get(Slider.class, "slider").getValue());
   }
   
   void textMaker(){
@@ -175,7 +177,10 @@ class AddTask{
         oneDayTask = 0;
       }
     }
-    else if(mouseX >= width/2-50 && mouseX <= width/2+50 && mouseY >= 675 && mouseY <= 725){
+  }
+  
+  void mouseReleased(){
+    if(mouseX >= width/2-50 && mouseX <= width/2+50 && mouseY >= 675 && mouseY <= 725){
       TableRow row = taskTable.addRow();
       row.setInt("id", taskTable.getRowCount());
       row.setString("name", taskName);
@@ -192,6 +197,7 @@ class AddTask{
       saveTable(taskTable, "taskDatabase.csv");
       
       taskAddBack = new TaskAddBackEnd(taskTable.getRowCount(), taskYear, taskMonth, taskDay, taskHour, taskMinut, taskDuration, taskRate, oneDayTask);
+      println();
     }
   }
   
