@@ -1,9 +1,11 @@
+//a class that have the button and layout to have the same layout on all the pages
 class AppDesign{
   
   int programState;
 
   int logoSize;
   
+  //images that is used in the layout
   PImage settingsLogo; 
   PImage profileLogo;
   PImage addLogo;
@@ -15,6 +17,7 @@ class AppDesign{
     
     logoSize = height/20;
     
+    //loading the image and resizes the image
     settingsLogo = loadImage("Settings_black.png");
     settingsLogo.resize(logoSize, logoSize);
   
@@ -30,9 +33,11 @@ class AppDesign{
     statsLogo = loadImage("Stats_button.png");
     statsLogo.resize(logoSize, logoSize);
     
+    //gets the page title
     this.pageTitle = pageTitle;
   }
   
+  //calls all function, so only one function needs to be called
   void draw(){
     background(0);
     buttonConnector();
@@ -45,6 +50,7 @@ class AppDesign{
     windowText(); 
   }
   
+  //functions that make the buttons
   void homeButton(){
     image(homeLogo, 0, height-logoSize);
     if(mousePressed && mouseX >= 0 && mouseX <= logoSize && mouseY >= height - logoSize && mouseY <= height){
@@ -80,6 +86,7 @@ class AppDesign{
     }
   }
   
+  //prints the page title in the top of the screen
   void windowText(){
     fill(255);
     textSize(logoSize);
@@ -87,6 +94,7 @@ class AppDesign{
     text(pageTitle, width/2, logoSize);
   }
   
+  //makes som rects that connects the buttons
   void buttonConnector(){
     rectMode(CORNER);
     noStroke();
@@ -94,7 +102,8 @@ class AppDesign{
     rect(0, 0, width, logoSize+5);
     rect(0, height, width, -logoSize - 5);
   }
-   
+  
+  //returns the pageNumber
   int programStateReturner(){
     return programState;
   }
