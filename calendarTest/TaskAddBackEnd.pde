@@ -147,8 +147,8 @@ class TaskAddBackEnd {
             algoritmeCode(i);
           }
         } else if (remaining >= 0.5) {
-          for (int i = 0; i < taskDuration; i++) {
-            if (i == taskDuration - 1) {
+          for (int i = 0; i <= taskDuration; i++) {
+            if (i == taskDuration) {
               timeStampEnd = timeStampStart + (millisInHour * remaining);
             } else {
               timeStampEnd = timeStampStart + millisInHour;
