@@ -1,0 +1,27 @@
+id,name,description,year,month,day,hour,minut,duration,rate,oneDayTask,completed
+1,hgjfksdkj,mbxmfnbxmffczx,8,6,11,0,34,7,1,0,
+2,avs opgave,lav en 3d model,9,5,5,2,34,7,1,0,
+3,test 1,test 1 af algoritme,2019,1,1,12,30,3.0,10,0,0
+4,test 1 af onedaytask,test 1 af onedaytask,2019,1,6,16,30,3.0,10,1,0
+5,test 2 af onedaytask,test 2 af onedaytask algoritmen,2019,1,6,16,0,3.0,10,1,0
+6,test 3 af onedaytask,test 3 af onedaytask algoritmen,2019,1,6,12,0,3.0,10,1,0
+7,test 4 af onedaytask,test 4 af onedaytask,2020,1,6,11,0,3.0,10,1,0
+8,test 5 af onedaytask,test 5 af onedaytask,2020,1,6,12,0,3.0,10,1,0
+9,test 6 af onedaytask,test 6 af onedaytask,2020,1,6,12,0,3.0,10,1,0
+10,test 7 af onedaytask,test 7 af onedaytask,2020,1,6,12,0,3.0,10,1,0
+11,test for TD 1,test for TD 1,2019,12,1,12,30,5.5,10,1,1
+12,Test for flere dags algoritme 1,test for flere dags algoritme 1,2020,2,13,18,15,5.0,10,0,0
+13,test for flere dag algoritme 1,test for flere dag algoritme 1,2020,2,2,14,0,5.5,10,0,0
+14,test 3 af flere dags opgave,test 3 af flere dags opgave,2020,2,6,11,30,6.0,10,0,0
+15,test 4 af flere dags opgave,test 4 af flere dags opgave,2020,2,6,12,30,6.0,10,0,0
+16,test 5 af flere dags opgave,test 5 af flere dags opgave,2020,2,6,11,30,6.0,10,0,0
+17,test 6 af flere dags algoritme,test 6 af flere dags algoritme,2020,2,6,12,30,6.0,10,0,0
+18,test 7 af flere dags opgave,test 7 af flere dags opgave,2020,2,5,12,30,6.0,10,0,0
+19,test et eller andet,test et eller andet,2020,5,5,7,30,6.0,1,1,0
+20,test for rowCount,test for rowCount,2020,2,2,12,0,5.0,10,0,0
+21,test for rowCount 2,test for rowcount 2,2020,2,2,5,0,6.0,10,0,0
+22,test alksdlkasj,test aslkdjalksjd,2020,2,2,10,30,6.0,10,0,0
+23,test lajkshdlkashflkjasf,test alskhflskahdfklsd,2020,2,2,6,0,6.0,10,0,0
+24,asdasda,asdga,2020,2,2,6,30,6.0,1,0,0
+25,jgkjgo,ougoigogkjg,2020,2,2,6,30,6.0,1,0,0
+26,kjgfkjfkjf,jgkjgkjgkjgkjgk,2020,2,2,6,30,6.0,1,0,0
